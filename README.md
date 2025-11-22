@@ -15,7 +15,62 @@ Hệ thống backend quản lý bãi đỗ xe thông minh, được xây dựng 
     *   Cảnh báo xe lạ hoặc truy cập trái phép ngay lập tức.
 *   **Lịch sử & Báo cáo**: Lưu trữ chi tiết lịch sử ra vào và log truy cập hệ thống.
 
-## 🛠 Công nghệ sử dụng
+## � Database Schema (ER Diagram)
+
+```mermaid
+erDiagram
+    Resident ||--o{ Vehicle : owns
+    Resident ||--o{ ParkingSession : has
+    Vehicle ||--o{ ParkingSession : has
+    ParkingSession ||--o{ AccessLog : has
+
+    Resident {
+        ObjectId _id PK
+        string fullName
+        string apartmentNumber
+        string phoneNumber
+        string email
+        string status
+    }
+
+    Vehicle {
+        ObjectId _id PK
+        string licensePlate
+        ObjectId residentId FK
+        string vehicleType
+        string brand
+        string color
+        string status
+    }
+
+    ParkingSession {
+        ObjectId _id PK
+        string licensePlate
+        ObjectId vehicleId FK
+        ObjectId residentId FK
+        date entryTime
+        date exitTime
+        string entryImage
+        string exitImage
+        number duration
+        string status
+    }
+
+    AccessLog {
+        ObjectId _id PK
+        string licensePlate
+        string action
+        date timestamp
+        string raspberryPiId
+        string image
+        boolean isAuthorized
+        ObjectId sessionId FK
+        string responseStatus
+        string errorMessage
+    }
+```
+
+## �🛠 Công nghệ sử dụng
 
 *   **Framework**: [NestJS](https://nestjs.com/) (Node.js)
 *   **Database**: MongoDB (Mongoose)
@@ -112,61 +167,3 @@ src/
 ├── app.module.ts      # Main Module
 └── main.ts            # Entry point
 ```
-
-##Diagram 
-
-+---------------+         +---------------+
-|  residents    |         |  vehicles     |
-|---------------| 1     N |---------------|
-| _id (PK)      |<--------| _id (PK)      |
-| fullName      |         | licensePlate  |
-| apartmentNo   |         | residentId(FK)|
-| phoneNumber   |         | vehicleType   |
-| email         |         | brand         |
-| status        |         | color         |
-| createdAt     |         | status        |
-| updatedAt     |         | registeredAt  |
-+---------------+         | updatedAt     |
-                          +---------------+
-                                 1
-                                 | 
-                                 | 
-                                 | 
-                                 N
-                          +-----------------+
-                          | parking_sessions |
-                          |-----------------|
-                          | _id (PK)        |
-                          | licensePlate    |
-                          | vehicleId (FK)  |
-                          | residentId (FK) |
-                          | entryTime       |
-                          | exitTime        |
-                          | entryImage      |
-                          | exitImage       |
-                          | duration        |
-                          | status          |
-                          | createdAt       |
-                          | updatedAt       |
-                          +-----------------+
-                                 1
-                                 |
-                                 | 
-                                 |
-                                 N
-                          +-----------------+
-                          |  access_logs    |
-                          |-----------------|
-                          | _id (PK)        |
-                          | licensePlate    |
-                          | action          |
-                          | timestamp       |
-                          | raspberryPiId   |
-                          | image           |
-                          | isAuthorized    |
-                          | sessionId (FK)  |
-                          | responseStatus  |
-                          | errorMessage    |
-                          | createdAt       |
-                          +-----------------+
-
