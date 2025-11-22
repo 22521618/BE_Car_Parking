@@ -138,6 +138,34 @@ Kết nối tới `http://localhost:3000` (sử dụng Socket.IO Client).
 | `dashboard/stats` | Server -> Client | Cập nhật số lượng xe trong bãi |
 | `parking/alert` | Server -> Client | Cảnh báo xe lạ / lỗi hệ thống |
 
+## 📡 MQTT Integration (IoT Devices)
+
+Hệ thống lắng nghe dữ liệu từ các thiết bị IoT (Raspberry Pi / Camera AI) qua giao thức MQTT.
+
+### Topic
+`parking/scan`
+
+### Payload Format (JSON)
+Thiết bị cần gửi dữ liệu theo định dạng sau:
+
+```json
+{
+  "licensePlate": "30A-12345",
+  "timestamp": "2023-11-22T08:00:00.000Z",
+  "action": "entry", 
+  "image": "http://example.com/image.jpg",
+  "raspberryPiId": "pi-01"
+}
+```
+
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `licensePlate` | String | Biển số xe nhận diện được |
+| `timestamp` | ISO Date | Thời gian quét |
+| `action` | String | `entry` (xe vào) hoặc `exit` (xe ra) |
+| `image` | String | URL hoặc Base64 của ảnh chụp |
+| `raspberryPiId` | String | ID của thiết bị gửi dữ liệu |
+
 ## 🧪 Testing
 
 ### Test MQTT (Giả lập Camera gửi dữ liệu)
