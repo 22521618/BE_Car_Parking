@@ -27,19 +27,19 @@ Hệ thống tuân theo kiến trúc **Layered Architecture** trong NestJS:
 
 ```mermaid
 graph TD
-    Client[Web Dashboard / Mobile App] -- HTTP REST --> Controller[Controllers (API Layer)]
-    Client -- WebSocket --> Gateway[Events Gateway (Real-time Layer)]
-    IoT[Raspberry Pi / Camera] -- MQTT --> MQTT_Broker[MQTT Broker (HiveMQ)]
-    MQTT_Broker -- MQTT Message --> App[NestJS Server]
+    Client["Web Dashboard / Mobile App"] -- HTTP REST --> Controller["Controllers (API Layer)"]
+    Client -- WebSocket --> Gateway["Events Gateway (Real-time Layer)"]
+    IoT["Raspberry Pi / Camera"] -- MQTT --> MQTT_Broker["MQTT Broker (HiveMQ)"]
+    MQTT_Broker -- MQTT Message --> App["NestJS Server"]
     
     subgraph "NestJS Server"
-        Controller --> Service[Services (Business Logic)]
+        Controller --> Service["Services (Business Logic)"]
         App -- Subscribe --> Service
-        Service --> Model[Mongoose Models (Data Access)]
+        Service --> Model["Mongoose Models (Data Access)"]
         Service -- Emit Event --> Gateway
     end
     
-    Model --> DB[(MongoDB)]
+    Model --> DB[("MongoDB")]
 ```
 
 *   **Controller**: Xử lý các yêu cầu HTTP từ người dùng (quản lý cư dân, xe, xem báo cáo).
