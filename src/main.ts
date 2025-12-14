@@ -10,6 +10,8 @@ async function bootstrap() {
     transport: Transport.MQTT,
     options: {
       url: process.env.MQTT_BROKER_URL || 'mqtt://broker.hivemq.com',
+      username: process.env.MQTT_USERNAME,
+      password: process.env.MQTT_PASSWORD,
     },
   });
 

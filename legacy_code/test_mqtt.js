@@ -6,7 +6,7 @@ client.on('connect', () => {
     console.log('Test Client Connected');
 
     const entryData = {
-        licensePlate: '30A-12345',
+        licensePlate: '30A-12343',
         timestamp: new Date().toISOString(),
         action: 'entry',
         image: 'http://example.com/entry.jpg',
@@ -18,7 +18,7 @@ client.on('connect', () => {
 
     setTimeout(() => {
         const exitData = {
-            licensePlate: '30A-12345',
+            licensePlate: '30A-12343',
             timestamp: new Date().toISOString(),
             action: 'exit',
             image: 'http://example.com/exit.jpg',
