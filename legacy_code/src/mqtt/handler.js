@@ -1,6 +1,6 @@
 const parkingService = require('../services/parkingService');
 
-const handleMessage = async (topic, message) => {
+const handleMessage = async (topic, message, client) => {
     if (topic === 'parking/scan') {
         try {
             const data = JSON.parse(message.toString());
@@ -8,8 +8,11 @@ const handleMessage = async (topic, message) => {
 
             const result = await parkingService.handleScan(data);
 
-            // Here you could publish the result back to a response topic if needed
-            // client.publish('parking/response', JSON.stringify(result));
+            if (client && client.connected) {
+                console.log('Sending response back to MQTT...');
+                client.publish('parking/response', JSON.stringify(result));
+            }
+
             console.log('Process result:', result);
 
         } catch (error) {

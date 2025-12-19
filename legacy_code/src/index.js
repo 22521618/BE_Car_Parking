@@ -17,7 +17,7 @@ const mqttClient = connectMQTT();
 
 // Handle MQTT Messages
 mqttClient.on('message', (topic, message) => {
-    handleMessage(topic, message);
+    handleMessage(topic, message, mqttClient);
 });
 
 console.log('Parking Management Server Started');
