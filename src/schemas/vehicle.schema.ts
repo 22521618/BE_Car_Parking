@@ -9,6 +9,9 @@ export class Vehicle {
     @Prop({ required: true, unique: true, index: true })
     licensePlate: string;
 
+    @Prop({ required: true, index: true })
+    cardId: string;
+
     @Prop({ type: Types.ObjectId, ref: 'Resident', required: true })
     residentId: Resident;
 
@@ -29,3 +32,6 @@ export class Vehicle {
 }
 
 export const VehicleSchema = SchemaFactory.createForClass(Vehicle);
+
+// Create compound unique index for licensePlate + cardId
+VehicleSchema.index({ licensePlate: 1, cardId: 1 }, { unique: true });

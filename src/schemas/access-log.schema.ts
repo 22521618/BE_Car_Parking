@@ -6,8 +6,11 @@ export type AccessLogDocument = AccessLog & Document;
 
 @Schema({ timestamps: { createdAt: true, updatedAt: false } })
 export class AccessLog {
-    @Prop({ required: true })
+    @Prop()
     licensePlate: string;
+
+    @Prop()
+    cardId: string;
 
     @Prop({ required: true, enum: ['entry', 'exit'] })
     action: string;

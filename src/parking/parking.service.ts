@@ -18,37 +18,94 @@ export class ParkingService {
     ) { }
 
     async handleScan(data: any) {
+        // Support both cardId and cardid (lowercase) from MQTT
+        const cardId = data.cardId || data.cardid;
         const { licensePlate, timestamp, action, image, raspberryPiId } = data;
 
         try {
-            const vehicle = await this.vehicleModel.findOne({
+            // Step 1: Check if licensePlate exists
+            const vehicleByPlate = await this.vehicleModel.findOne({
                 licensePlate: licensePlate,
                 status: 'active'
-            }).populate('residentId');
+            });
 
-            if (!vehicle) {
+            // Step 2: Check if cardId exists
+            const vehicleByCard = await this.vehicleModel.findOne({
+                cardId: cardId,
+                status: 'active'
+            });
+
+            // Step 3: Determine the specific error
+            let errorMessage = '';
+            let vietnameseMessage = '';
+
+            if (!vehicleByPlate && !vehicleByCard) {
+                errorMessage = 'Both license plate and card not registered';
+                vietnameseMessage = 'Biển số và thẻ không có trong hệ thống';
+            } else if (!vehicleByPlate) {
+                errorMessage = 'License plate not registered';
+                vietnameseMessage = 'Biển số không có trong hệ thống';
+            } else if (!vehicleByCard) {
+                errorMessage = 'Card not registered';
+                vietnameseMessage = 'Thẻ không có trong hệ thống';
+            } else if (vehicleByPlate._id.toString() !== vehicleByCard._id.toString()) {
+                errorMessage = 'License plate and card do not match';
+                vietnameseMessage = 'Biển số và thẻ không khớp với nhau';
+            }
+
+            // If there's any error, deny access
+            if (errorMessage) {
                 await this.logAccess({
                     licensePlate,
+                    cardId,
                     action,
                     timestamp,
                     image,
                     raspberryPiId,
                     isAuthorized: false,
                     responseStatus: 'denied',
-                    errorMessage: 'Vehicle not registered'
+                    errorMessage
                 });
 
                 this.eventsGateway.emitAlert({
                     type: 'unauthorized_access',
-                    message: `Unauthorized access attempt by ${licensePlate}`,
+                    message: `Unauthorized access: ${errorMessage} - licensePlate: ${licensePlate}, cardId: ${cardId}`,
                     licensePlate,
+                    cardId,
                     timestamp,
                     image
                 });
 
                 return {
                     status: 'denied',
-                    message: 'Xe không có trong hệ thống',
+                    message: vietnameseMessage,
+                    allowAccess: false
+                };
+            }
+
+            // Step 4: If all checks pass, get the vehicle with populated resident data
+            const vehicle = await this.vehicleModel.findOne({
+                licensePlate: licensePlate,
+                cardId: cardId,
+                status: 'active'
+            }).populate('residentId');
+
+            if (!vehicle) {
+                await this.logAccess({
+                    licensePlate,
+                    cardId,
+                    action,
+                    timestamp,
+                    image,
+                    raspberryPiId,
+                    isAuthorized: false,
+                    responseStatus: 'denied',
+                    errorMessage: 'Vehicle not active'
+                });
+
+                return {
+                    status: 'denied',
+                    message: 'Xe không hoạt động',
                     allowAccess: false
                 };
             }
@@ -85,6 +142,7 @@ export class ParkingService {
         if (activeSession) {
             await this.logAccess({
                 licensePlate: vehicle.licensePlate,
+                cardId: vehicle.cardId,
                 action: 'entry',
                 timestamp,
                 image,
@@ -120,6 +178,7 @@ export class ParkingService {
 
         await this.logAccess({
             licensePlate: vehicle.licensePlate,
+            cardId: vehicle.cardId,
             action: 'entry',
             timestamp,
             image,
@@ -161,6 +220,7 @@ export class ParkingService {
 
         if (!activeSession) {
             await this.logAccess({
+                cardId: vehicle.cardId,
                 licensePlate: vehicle.licensePlate,
                 action: 'exit',
                 timestamp,
@@ -200,6 +260,7 @@ export class ParkingService {
         );
 
         await this.logAccess({
+            cardId: vehicle.cardId,
             licensePlate: vehicle.licensePlate,
             action: 'exit',
             timestamp,

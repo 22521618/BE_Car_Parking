@@ -4,16 +4,16 @@ Hệ thống backend quản lý bãi đỗ xe thông minh, được xây dựng 
 
 ## 🚀 Tính năng chính
 
-* **Quản lý Cư dân & Xe**: API CRUD đầy đủ để quản lý thông tin cư dân và phương tiện đăng ký.
-* **Kiểm soát Ra/Vào**:
-  * Nhận tín hiệu quét biển số từ MQTT (`parking/scan`).
-  * Tự động kiểm tra xe đăng ký, tạo phiên đỗ xe (Parking Session).
-  * Tính toán thời gian đỗ xe khi xe ra.
-* **Realtime Dashboard**:
-  * Sử dụng **WebSocket (Socket.IO)** để đẩy dữ liệu trực tiếp lên Dashboard.
-  * Cập nhật số lượng xe trong bãi, lượt ra vào trong ngày.
-  * Cảnh báo xe lạ hoặc truy cập trái phép ngay lập tức.
-* **Lịch sử & Báo cáo**: Lưu trữ chi tiết lịch sử ra vào và log truy cập hệ thống.
+- **Quản lý Cư dân & Xe**: API CRUD đầy đủ để quản lý thông tin cư dân và phương tiện đăng ký.
+- **Kiểm soát Ra/Vào**:
+  - Nhận tín hiệu quét biển số từ MQTT (`parking/scan`).
+  - Tự động kiểm tra xe đăng ký, tạo phiên đỗ xe (Parking Session).
+  - Tính toán thời gian đỗ xe khi xe ra.
+- **Realtime Dashboard**:
+  - Sử dụng **WebSocket (Socket.IO)** để đẩy dữ liệu trực tiếp lên Dashboard.
+  - Cập nhật số lượng xe trong bãi, lượt ra vào trong ngày.
+  - Cảnh báo xe lạ hoặc truy cập trái phép ngay lập tức.
+- **Lịch sử & Báo cáo**: Lưu trữ chi tiết lịch sử ra vào và log truy cập hệ thống.
 
 ## � Database Schema (ER Diagram)
 
@@ -72,18 +72,18 @@ erDiagram
 
 ## �🛠 Công nghệ sử dụng
 
-* **Framework**: [NestJS](https://nestjs.com/) (Node.js)
-* **Database**: MongoDB (Mongoose)
-* **Messaging**: MQTT (HiveMQ / Mosquitto)
-* **Realtime**: Socket.IO
-* **Language**: TypeScript
+- **Framework**: [NestJS](https://nestjs.com/) (Node.js)
+- **Database**: MongoDB (Mongoose)
+- **Messaging**: MQTT (HiveMQ / Mosquitto)
+- **Realtime**: Socket.IO
+- **Language**: TypeScript
 
 ## 📦 Cài đặt & Chạy dự án
 
 ### 1. Yêu cầu
 
-* Node.js (v16+)
-* MongoDB (Local hoặc Atlas)
+- Node.js (v16+)
+- MongoDB (Local hoặc Atlas)
 
 ### 2. Cài đặt dependencies
 
@@ -124,29 +124,29 @@ Server sẽ chạy tại: `http://localhost:3000`
 
 ### REST API
 
-| Method | Endpoint | Mô tả |
-| :--- | :--- | :--- |
-| **Residents** | | |
-| `GET` | `/residents` | Lấy danh sách cư dân |
-| `POST` | `/residents` | Thêm cư dân mới |
-| **Vehicles** | | |
-| `GET` | `/vehicles` | Lấy danh sách xe |
-| `POST` | `/vehicles` | Đăng ký xe mới |
-| **Parking** | | |
-| `GET` | `/parking-sessions` | Lịch sử ra vào |
-| `GET` | `/access-logs` | Log truy cập chi tiết |
-| **Dashboard** | | |
-| `GET` | `/dashboard/summary` | Thống kê tổng quan |
+| Method        | Endpoint             | Mô tả                 |
+| :------------ | :------------------- | :-------------------- |
+| **Residents** |                      |                       |
+| `GET`         | `/residents`         | Lấy danh sách cư dân  |
+| `POST`        | `/residents`         | Thêm cư dân mới       |
+| **Vehicles**  |                      |                       |
+| `GET`         | `/vehicles`          | Lấy danh sách xe      |
+| `POST`        | `/vehicles`          | Đăng ký xe mới        |
+| **Parking**   |                      |                       |
+| `GET`         | `/parking-sessions`  | Lịch sử ra vào        |
+| `GET`         | `/access-logs`       | Log truy cập chi tiết |
+| **Dashboard** |                      |                       |
+| `GET`         | `/dashboard/summary` | Thống kê tổng quan    |
 
 ### WebSocket Events
 
 Kết nối tới `http://localhost:3000` (sử dụng Socket.IO Client).
 
-| Event Name | Direction | Mô tả |
-| :--- | :--- | :--- |
+| Event Name          | Direction        | Mô tả                                         |
+| :------------------ | :--------------- | :-------------------------------------------- |
 | `parking/live-feed` | Server -> Client | Thông tin xe vừa vào/ra (kèm ảnh, tên cư dân) |
-| `dashboard/stats` | Server -> Client | Cập nhật số lượng xe trong bãi |
-| `parking/alert` | Server -> Client | Cảnh báo xe lạ / lỗi hệ thống |
+| `dashboard/stats`   | Server -> Client | Cập nhật số lượng xe trong bãi                |
+| `parking/alert`     | Server -> Client | Cảnh báo xe lạ / lỗi hệ thống                 |
 
 ## 📡 MQTT Integration (IoT Devices)
 
@@ -166,8 +166,9 @@ Thiết bị cần gửi dữ liệu tại topic `parking/scan` theo định d�
 ```json
 {
   "licensePlate": "81AX-032692",
+  "cardId": "6F8CC2FB",
   "timestamp": "2025-11-22T08:00:00.000Z",
-  "action": "entry", 
+  "action": "entry",
   "image": "http://example.com/image.jpg",
   "raspberryPiId": "pi-01"
 }
@@ -177,58 +178,58 @@ Thiết bị cần nhận tín hiệu từ topic `parking/response` theo định
 
 ```json
 {
-    "pattern":"parking/response",
-    "data":{
-        "status":"warning",
-        "message":"Xe chưa vào bãi, không thể ra",
-        "allowAccess":false
-    }
+  "pattern": "parking/response",
+  "data": {
+    "status": "warning",
+    "message": "Xe chưa vào bãi, không thể ra",
+    "allowAccess": false
+  }
 }
 ```
 
 ```json
 {
-    "pattern":"parking/response",
-    "data":{
-        "status":"success",
-        "message":"Chào mừng Nguyen Van Muoi - B1404",
-        "allowAccess":true,
-        "entryTime":"2025-12-19T21:58:00.000Z"
-    }
+  "pattern": "parking/response",
+  "data": {
+    "status": "success",
+    "message": "Chào mừng Nguyen Van Muoi - B1404",
+    "allowAccess": true,
+    "entryTime": "2025-12-19T21:58:00.000Z"
+  }
 }
 ```
 
 ```json
 {
-    "pattern":"parking/response",
-    "data":{
-        "status":"warning",
-        "message":"Xe đang trong bãi, không thể vào lại",
-        "allowAccess":false
-    }
+  "pattern": "parking/response",
+  "data": {
+    "status": "warning",
+    "message": "Xe đang trong bãi, không thể vào lại",
+    "allowAccess": false
+  }
 }
 ```
 
 ```json
 {
-    "pattern":"parking/response",
-    "data":{
-        "status":"success",
-        "message":"Tạm biệt Nguyen Van Muoi",
-        "allowAccess":true,
-        "exitTime":"2025-12-19T22:34:00.000Z",
-        "duration":36
-    }
+  "pattern": "parking/response",
+  "data": {
+    "status": "success",
+    "message": "Tạm biệt Nguyen Van Muoi",
+    "allowAccess": true,
+    "exitTime": "2025-12-19T22:34:00.000Z",
+    "duration": 36
+  }
 }
 ```
 
-| Field | Type | Description |
-| :--- | :--- | :--- |
-| `licensePlate` | String | Biển số xe nhận diện được |
-| `timestamp` | ISO Date | Thời gian quét |
-| `action` | String | `entry` (xe vào) hoặc `exit` (xe ra) |
-| `image` | String | URL hoặc Base64 của ảnh chụp |
-| `raspberryPiId` | String | ID của thiết bị gửi dữ liệu |
+| Field           | Type     | Description                          |
+| :-------------- | :------- | :----------------------------------- |
+| `licensePlate`  | String   | Biển số xe nhận diện được            |
+| `timestamp`     | ISO Date | Thời gian quét                       |
+| `action`        | String   | `entry` (xe vào) hoặc `exit` (xe ra) |
+| `image`         | String   | URL hoặc Base64 của ảnh chụp         |
+| `raspberryPiId` | String   | ID của thiết bị gửi dữ liệu          |
 
 ## 🧪 Testing
 
