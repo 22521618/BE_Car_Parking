@@ -6,7 +6,8 @@ Hệ thống backend quản lý bãi đỗ xe thông minh, được xây dựng 
 
 - **Quản lý Cư dân & Xe**: API CRUD đầy đủ để quản lý thông tin cư dân và phương tiện đăng ký.
 - **Kiểm soát Ra/Vào**:
-  - Nhận tín hiệu quét biển số từ MQTT (`parking/scan`).
+  - Nhận tín hiệu quét biển số và thẻ từ (cardId) từ MQTT (`parking/scan`).
+  - Xác thực kép: Kiểm tra cả biển số và thẻ từ, đảm bảo chúng khớp với cùng một xe.
   - Tự động kiểm tra xe đăng ký, tạo phiên đỗ xe (Parking Session).
   - Tính toán thời gian đỗ xe khi xe ra.
 - **Realtime Dashboard**:
@@ -36,6 +37,7 @@ erDiagram
     Vehicle {
         ObjectId _id PK
         string licensePlate
+        string cardId
         ObjectId residentId FK
         string vehicleType
         string brand
@@ -59,6 +61,7 @@ erDiagram
     AccessLog {
         ObjectId _id PK
         string licensePlate
+        string cardId
         string action
         date timestamp
         string raspberryPiId
@@ -223,13 +226,14 @@ Thiết bị cần nhận tín hiệu từ topic `parking/response` theo định
 }
 ```
 
-| Field           | Type     | Description                          |
-| :-------------- | :------- | :----------------------------------- |
-| `licensePlate`  | String   | Biển số xe nhận diện được            |
-| `timestamp`     | ISO Date | Thời gian quét                       |
-| `action`        | String   | `entry` (xe vào) hoặc `exit` (xe ra) |
-| `image`         | String   | URL hoặc Base64 của ảnh chụp         |
-| `raspberryPiId` | String   | ID của thiết bị gửi dữ liệu          |
+| Field           | Type     | Description                                        |
+| :-------------- | :------- | :------------------------------------------------- |
+| `licensePlate`  | String   | Biển số xe nhận diện được (optional)               |
+| `cardId`        | String   | Mã thẻ từ RFID (optional, ít nhất 1 trong 2 field) |
+| `timestamp`     | ISO Date | Thời gian quét                                     |
+| `action`        | String   | `entry` (xe vào) hoặc `exit` (xe ra)               |
+| `image`         | String   | URL hoặc Base64 của ảnh chụp                       |
+| `raspberryPiId` | String   | ID của thiết bị gửi dữ liệu                        |
 
 ## 🧪 Testing
 
