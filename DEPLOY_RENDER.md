@@ -65,14 +65,6 @@ File `render.yaml` đã được tạo sẵn trong project. Render sẽ tự đ�
 
 Trong phần **Environment Variables**, thêm các biến sau:
 
-| Key | Value | Nguồn |
-|-----|-------|-------|
-| `NODE_ENV` | `production` | Manual |
-| `MONGO_URI` | `mongodb+srv://22521618_db_user:VV5wlga1fnV8drPJ@cluster0.ak6tt6q.mongodb.net/?appName=Cluster0` | Từ file .env |
-| `MQTT_BROKER_URL` | `mqtts://4493498903d14e23adba21cf6799663e.s1.eu.hivemq.cloud:8883` | Từ file .env |
-| `MQTT_USERNAME` | `22521618` | Từ file .env |
-| `MQTT_PASSWORD` | `Atng1234567890/` | Từ file .env |
-
 **Cách thêm**:
 1. Click **"Add Environment Variable"**
 2. Nhập Key và Value
