@@ -1,7 +1,9 @@
 # Hướng dẫn Deploy dự án Car Parking lên Render
 
 ## Tổng quan
+
 Dự án này là một NestJS API server kết nối với:
+
 - MongoDB Atlas (Database)
 - HiveMQ Cloud (MQTT Broker)
 - WebSocket Server
@@ -65,15 +67,8 @@ File `render.yaml` đã được tạo sẵn trong project. Render sẽ tự đ�
 
 Trong phần **Environment Variables**, thêm các biến sau:
 
-| Key | Value | Nguồn |
-|-----|-------|-------|
-| `NODE_ENV` | `production` | Manual |
-| `MONGO_URI` | `mongodb+srv://22521618_db_user:VV5wlga1fnV8drPJ@cluster0.ak6tt6q.mongodb.net/?appName=Cluster0` | Từ file .env |
-| `MQTT_BROKER_URL` | `mqtts://4493498903d14e23adba21cf6799663e.s1.eu.hivemq.cloud:8883` | Từ file .env |
-| `MQTT_USERNAME` | `22521618` | Từ file .env |
-| `MQTT_PASSWORD` | `Atng1234567890/` | Từ file .env |
-
 **Cách thêm**:
+
 1. Click **"Add Environment Variable"**
 2. Nhập Key và Value
 3. Lặp lại cho tất cả các biến
@@ -87,16 +82,20 @@ Trong phần **Environment Variables**, thêm các biến sau:
 ### 6. Kiểm tra Deployment
 
 #### Theo dõi Build Log:
+
 - Xem tab **"Logs"** để theo dõi quá trình build
 - Chờ thông báo: `"Parking Management Server (NestJS) Started"`
 
 #### Test API:
+
 Sau khi deploy thành công, bạn sẽ nhận được URL dạng:
+
 ```
 https://car-parking-api-xxxx.onrender.com
 ```
 
 Test các endpoint:
+
 ```bash
 # Test health check (nếu có)
 curl https://car-parking-api-xxxx.onrender.com
@@ -108,16 +107,21 @@ curl https://car-parking-api-xxxx.onrender.com/api/health
 ### 7. Cấu hình bổ sung (Tùy chọn)
 
 #### A. Custom Domain
+
 1. Vào **Settings** → **Custom Domain**
 2. Thêm domain của bạn
 3. Cấu hình DNS theo hướng dẫn
 
 #### B. Auto-Deploy
+
 Render tự động deploy khi bạn push code mới lên branch `main`:
+
 - Settings → Build & Deploy → **Auto-Deploy**: `Yes`
 
 #### C. Health Check Path
+
 Nếu bạn có health check endpoint:
+
 - Settings → Health & Alerts
 - Thêm **Health Check Path**: `/health` hoặc `/api/health`
 
@@ -126,46 +130,56 @@ Nếu bạn có health check endpoint:
 ### 1. Build Failed
 
 **Lỗi**: `npm install` failed
+
 - **Giải pháp**: Kiểm tra `package.json` có hợp lệ không
 - Đảm bảo tất cả dependencies đều có trong `dependencies`, không chỉ `devDependencies`
 
 ### 2. Application Crashed
 
 **Lỗi**: Port binding issue
+
 - **Giải pháp**: Render tự động set biến `PORT`, cập nhật [main.ts](src/main.ts:19):
+
 ```typescript
 const port = process.env.PORT || 3000;
 await app.listen(port);
 ```
 
 **Lỗi**: MongoDB connection failed
+
 - Kiểm tra `MONGO_URI` đã được set đúng
 - Kiểm tra MongoDB Atlas có whitelist IP `0.0.0.0/0` (allow all)
 
 **Lỗi**: MQTT connection failed
+
 - Kiểm tra HiveMQ credentials
 - Kiểm tra URL có đúng protocol `mqtts://`
 
 ### 3. Slow Cold Start
 
 Render Free tier có "spin down" sau 15 phút không hoạt động:
+
 - First request sau đó sẽ mất 30-60 giây
 - **Giải pháp**: Nâng lên Starter plan hoặc dùng cron job để ping server
 
 ## Lưu ý bảo mật
 
 ### 1. Bảo vệ Environment Variables
+
 - **KHÔNG BAO GIỜ** commit file `.env` lên Git
 - Sử dụng Render Environment Variables cho production
 - Xem xét sử dụng Secret Management service
 
 ### 2. MongoDB Atlas Security
+
 1. Truy cập MongoDB Atlas Dashboard
 2. Network Access → Add IP Address → `0.0.0.0/0` (Allow from anywhere)
    - Hoặc thêm IP của Render (kiểm tra trong Render logs)
 
 ### 3. API Security
+
 Xem xét thêm:
+
 - Rate limiting
 - CORS configuration (đã có trong code)
 - API key authentication
@@ -174,6 +188,7 @@ Xem xét thêm:
 ## Chi phí
 
 ### Free Tier
+
 - **Giới hạn**: 750 giờ/tháng (đủ cho 1 service chạy 24/7)
 - **Hạn chế**:
   - Spin down sau 15 phút không hoạt động
@@ -181,12 +196,14 @@ Xem xét thêm:
   - Shared CPU
 
 ### Starter Plan ($7/tháng)
+
 - Không spin down
 - 512 MB RAM
 - Shared CPU
 - Tốt cho production nhỏ
 
 ### Standard Plan ($25/tháng)
+
 - 2 GB RAM
 - Dedicated CPU
 - Tốt cho production có traffic cao
@@ -194,12 +211,15 @@ Xem xét thêm:
 ## Monitoring
 
 ### Built-in Monitoring
+
 Render cung cấp:
+
 - **Metrics**: CPU, Memory, Bandwidth usage
 - **Logs**: Real-time application logs
 - **Alerts**: Email notifications khi service down
 
 ### External Monitoring (Khuyến nghị)
+
 - **UptimeRobot**: Miễn phí, ping server mỗi 5 phút
 - **Better Uptime**: Alert nhanh hơn
 - **Sentry**: Error tracking và performance monitoring
@@ -227,6 +247,7 @@ Render cung cấp:
 ## Hỗ trợ
 
 Nếu gặp vấn đề:
+
 1. Kiểm tra **Logs** trên Render Dashboard
 2. Kiểm tra MongoDB Atlas connections
 3. Kiểm tra HiveMQ Cloud status
